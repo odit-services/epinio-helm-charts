@@ -1,0 +1,16 @@
+---
+apiVersion: "v1"
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "epinio-truncate" .Values.epinio.appName }}
+  labels:
+    {{- include "epinio-application.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "epinio-application.annotations" $ | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.userConfig.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.userConfig.storageSize }}
