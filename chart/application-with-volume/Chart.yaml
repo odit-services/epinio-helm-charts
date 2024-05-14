@@ -1,0 +1,17 @@
+apiVersion: v2
+name: epinio-application-with-volume
+description: The helm chart for epinio applications to be deployed with a volume
+icon: https://raw.githubusercontent.com/odit-services/epinio-helm-charts/main/assets/epinio.png
+home: https://github.com/odit-services/epinio-helm-charts
+type: application
+version: 0.1.27
+keywords:
+- epinio
+- paas
+maintainers:
+- email: info@odit.services
+  name: ODIT.Services
+sources:
+- https://github.com/odit-services/epinio-helm-charts
+annotations:
+  artifacthub.io/license: Apache-2.0
