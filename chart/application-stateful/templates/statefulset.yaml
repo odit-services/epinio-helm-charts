@@ -60,6 +60,11 @@ spec:
         - name: {{ .name | quote }}
           value: {{ .value | quote }}
         {{- end}}
+        {{- with .Values.userConfig.envFromSecretName }}
+        envFrom:
+        - secretRef:
+            name: {{ . }}
+        {{- end }}
         image: {{ .Values.epinio.imageURL }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- with .Values.resources }}

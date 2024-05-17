@@ -72,6 +72,7 @@ tolerations: []
 affinity: {}
 
 userConfig:
+  envFromSecretName: ~
   storageClass: hcloud-volumes
   storageSize: 1Gi
   storagePath: /data

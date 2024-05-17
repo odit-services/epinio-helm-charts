@@ -71,4 +71,5 @@ tolerations: []
 
 affinity: {}
 
-userConfig: {}
+userConfig:
+  envFromSecretName: ~
