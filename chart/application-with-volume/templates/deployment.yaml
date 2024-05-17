@@ -47,7 +47,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: data
-          mountPath: {{ .Values.userconfig.storagePath }}
+          mountPath: {{ .Values.userConfig.storagePath }}
         {{- with .Values.epinio.configpaths }}
         {{- range . }}
         - mountPath: /configurations/{{ .path }}
