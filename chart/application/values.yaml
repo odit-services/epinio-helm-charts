@@ -73,3 +73,4 @@ affinity: {}
 
 userConfig:
   envFromSecretName: ~
+  storageFsGroup: 1001

@@ -76,3 +76,4 @@ userConfig:
   storageClass: hcloud-volumes
   storageSize: 1Gi
   storagePath: /data
+  storageFsGroup: 1001

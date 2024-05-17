@@ -73,6 +73,8 @@ spec:
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end}}
+      securityContext:
+        fsGroup: {{ .Values.userConfig.storageFsGroup }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
