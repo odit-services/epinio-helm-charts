@@ -4,7 +4,7 @@ description: The helm chart for epinio applications to be deployed with a volume
 icon: https://raw.githubusercontent.com/odit-services/epinio-helm-charts/main/assets/epinio.png
 home: https://github.com/odit-services/epinio-helm-charts
 type: application
-version: 0.1.29
+version: 0.1.30
 keywords:
 - epinio
 - paas
