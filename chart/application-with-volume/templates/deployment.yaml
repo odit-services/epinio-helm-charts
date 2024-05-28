@@ -9,6 +9,8 @@ metadata:
     {{- include "epinio-application.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.epinio.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.epinio.appName | quote }}
