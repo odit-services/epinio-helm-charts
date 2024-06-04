@@ -45,11 +45,17 @@ spec:
             - name: DB_CLIENT
               value: "sqlite3"
             - name: ADMIN_EMAIL
-              value: {{ .Values.auth.admin.email }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "directus.fullname" . }}
+                  key: adminEmail
             - name: ADMIN_PASSWORD
-              value: {{ .Values.auth.admin.password }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "directus.fullname" . }}
+                  key: adminPassword
             - name: SECRET
-              value: {{ .Values.auth.secret }}
+              value: "{{ .Values.auth.secret }}"
           livenessProbe:
             httpGet:
               path: /server/ping
