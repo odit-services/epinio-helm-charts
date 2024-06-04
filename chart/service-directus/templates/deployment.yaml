@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "directus.fullname" . }}
+  labels:
+    {{- include "directus.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "directus.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "directus.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "directus.serviceAccountName" . }}
+      securityContext:
+        fsGroup: 1000
+      replicas: 1
+      revisionHistoryLimit: 10
+      strategy:
+        type: Recreate
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: data
+              mountPath: /directus/database
+              subPath: database
+            - name: data
+              mountPath: /directus/uploads
+              subPath: uploads
+            - name: data
+              mountPath: /directus/extensions
+              subPath: extensions
+          ports:
+            - name: http
+              containerPort: 8055
+              protocol: TCP
+          env:
+            - name: DB_FILENAME
+              value: "/directus/database/data.db"
+            - name: DB_CLIENT
+              value: "sqlite3"
+            - name: ADMIN_EMAIL
+              value: {{ .Values.auth.admin.email }}
+            - name: ADMIN_PASSWORD
+              value: {{ .Values.auth.admin.password }}
+            - name: SECRET
+              value: {{ .Values.auth.secret }}
+          livenessProbe:
+            httpGet:
+              path: /server/ping
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /server/ping
+              port: http
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "directus.fullname" . }}

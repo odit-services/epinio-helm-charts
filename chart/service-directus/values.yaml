@@ -1,0 +1,21 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: directus/directus
+  tag: latest
+service:
+  type: ClusterIP
+  port: 8055
+persistence:
+  accessMode: ReadWriteOnce
+  storageClass: hcloud-volumes
+  size: 10Gi
+serviceAccount:
+  create: false
+ingress:
+  domain: lab.insfx.com
+  clusterIssuer: letsencrypt-prod
+auth:
+  admin:
+    email: lab@insfx.com
+    password: lab
+  secret: lab
