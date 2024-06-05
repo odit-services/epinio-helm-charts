@@ -12,10 +12,10 @@ persistence:
 serviceAccount:
   create: false
 ingress:
-  domain: lab.insfx.com
+  domain: demo.odit.services
   clusterIssuer: letsencrypt-prod
 auth:
   admin:
-    email: lab@insfx.com
-    password: lab
+    email: demo@odit.services
+    password: epiniodemo
   secret: lab
