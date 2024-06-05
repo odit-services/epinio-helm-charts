@@ -1,16 +1,26 @@
-# A fork of the official Epinio Helm Charts with some custom fun
+# A fork of the official Epinio Helm Charts extended with additional charts
 
-<img src="./assets/epinio.png" align="right" width="200" height="50%">
+Made to be used with the awesome [Epinio](https://github.com/epinio/epinio) by [ODIT.Services](https://odit.services)
 
 ## Usage
 
-The documentation by epinio is centralized in a uniq place, checkout the [doc website].
+These are pretty much normal helm charts with some epinio-specific value names.
+We reccomend using them with epinio, but you can use them for whatever you want to.
 
-[doc website]: https://docs.epinio.io
+Official Epinio Docs: https://docs.epinio.io
 
-## Helm chart repo
+## Charts
 
-This [repo] is also used as Helm chart repository, by publishing the [index.yaml] through the github-pages feature.
+### Application charts
 
-[repo]: https://github.com/odit-services/epinio-helm-charts
-<!-- [index.yaml]: https://epinio.github.io/odit-services/epinio-helm-charts -->
+> Used to deploy epinio applications
+
+* Application: Default epinio application chart customized with the ability to load additional ENV-values from a secret
+* Application-Stateful: Epinio application as a statefulset with persistence (includes env from secret)
+* Application-With-Volume: Epinio application with the ability to mount a volume to a configurable path (includes env from secret)
+
+### Service charts
+
+> Offer services that users can book in the epinio service marketplace
+
+* Directus: A basic directus instance with ingress and persistence
