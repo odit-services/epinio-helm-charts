@@ -19,3 +19,4 @@ auth:
     email: lab@insfx.com
     password: lab
   secret: lab
+extraEnv: []
