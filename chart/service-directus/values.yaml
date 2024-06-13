@@ -20,3 +20,9 @@ auth:
     password: epiniodemo
   secret: lab
 extraEnv: []
+postgres:
+  enabled: false
+  majorVersion: 16
+  persistence:
+    size: 10Gi
+    storageClass: hcloud-volumes

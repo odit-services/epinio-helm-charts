@@ -6,6 +6,9 @@ metadata:
     {{- include "directus.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "directus.selectorLabels" . | nindent 6 }}
@@ -17,10 +20,6 @@ spec:
       serviceAccountName: {{ include "directus.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
-      replicas: 1
-      revisionHistoryLimit: 10
-      strategy:
-        type: Recreate
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -40,10 +39,24 @@ spec:
               containerPort: 8055
               protocol: TCP
           env:
+          {{- if .Values.postgres.enabled }}
+            - name: DB_CLIENT
+              value: "pg"
+            - name: DB_HOST
+              value: "{{ include "directus.dbname" . }}-rw"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.dbname" . }}-app"
+                  key: uri
+          {{- else}}
             - name: DB_FILENAME
               value: "/directus/database/data.db"
             - name: DB_CLIENT
               value: "sqlite3"
+          {{- end}}
             - name: ADMIN_EMAIL
               valueFrom:
                 secretKeyRef:

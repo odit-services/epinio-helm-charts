@@ -1,0 +1,16 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "directus.dbname" . }}
+spec:
+  instances: 1
+  storage:
+    size: {{ .Values.postgres.persistence.size }}
+    storageClass: {{ .Values.postgres.persistence.storageClass }}
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql
+    major: {{ .Values.postgres.majorVersion }}
+{{- end}}
