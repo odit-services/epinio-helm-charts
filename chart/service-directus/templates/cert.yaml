@@ -5,10 +5,10 @@ metadata:
   labels:
     {{- include "directus.labels" . | nindent 4 }}
 spec:
-  commonName: "{{ include "directus.releasename" . }}.{{ .Values.ingress.domain }}"
+  commonName: "{{ include "directus.domain" . }}"
   secretName: {{ include "directus.fullname" . }}-tls
   dnsNames:
-    - {{ include "directus.releasename" . }}.{{ .Values.ingress.domain }}
+    - {{ include "directus.domain" . }}
   issuerRef:
     name: {{ .Values.ingress.clusterIssuer }}
     kind: ClusterIssuer

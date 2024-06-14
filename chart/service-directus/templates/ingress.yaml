@@ -9,7 +9,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ include "directus.releasename" . }}.{{ .Values.ingress.domain }}`)
+      match: Host(`{{ include "directus.domain" . }}`)
       services:
         - name: {{ include "directus.fullname" . }}
           port: {{ .Values.service.port }}

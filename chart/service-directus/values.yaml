@@ -12,8 +12,9 @@ persistence:
 serviceAccount:
   create: false
 ingress:
-  domain: demo.odit.services
+  tld: demo.odit.services
   clusterIssuer: letsencrypt-prod
+  domain: ~
 auth:
   admin:
     email: demo@odit.services
