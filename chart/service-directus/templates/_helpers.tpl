@@ -35,7 +35,7 @@ Create a default fully qualified name for the database.
 This is the fullname truncated to 50 characters and with the suffix "-db" appended.
 */}}
 {{- define "directus.dbname" -}}
-{{- include "directus.fullname" . | trunc 50 | trimSuffix "-" }}-db
+{{- include "directus.fullname" . | trunc 45 | trimSuffix "-" }}-db
 {{- end }}
 
 {{/*
