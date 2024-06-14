@@ -49,7 +49,7 @@ Create chart name and version as used by the chart label.
 {{- if .Values.ingress.domain }}
 {{- .Values.ingress.domain }}
 {{- else }}
-{{ include "directus.releasename" . }}.{{ .Values.ingress.tld }}
+{{ include "directus.releasename" . }}.{{ .Values.ingress.parentDomain }}
 {{- end }}
 {{- end }}
 

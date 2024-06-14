@@ -12,7 +12,7 @@ persistence:
 serviceAccount:
   create: false
 ingress:
-  tld: demo.odit.services
+  parentDomain: demo.odit.services
   clusterIssuer: letsencrypt-prod
   domain: ~
 auth:
