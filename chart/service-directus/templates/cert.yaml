@@ -6,9 +6,9 @@ metadata:
     {{- include "directus.labels" . | nindent 4 }}
 spec:
   commonName: "{{ include "directus.domain" . }}"
-  secretName: {{ include "directus.fullname" . }}-tls
+  secretName: "{{ include "directus.fullname" . }}-tls"
   dnsNames:
-    - {{ include "directus.domain" . }}
+    - "{{ include "directus.domain" . }}"
   issuerRef:
-    name: {{ .Values.ingress.clusterIssuer }}
+    name: "{{ .Values.ingress.clusterIssuer }}"
     kind: ClusterIssuer

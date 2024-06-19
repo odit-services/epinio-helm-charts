@@ -9,9 +9,9 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ include "directus.domain" . }}`)
+      match: "Host(`{{ include "directus.domain" . }}`)"
       services:
-        - name: {{ include "directus.fullname" . }}
+        - name: "{{ include "directus.fullname" . }}"
           port: {{ .Values.service.port }}
   tls:
-    secretName: {{ include "directus.fullname" . }}-tls
+    secretName: "{{ include "directus.fullname" . }}-tls"
