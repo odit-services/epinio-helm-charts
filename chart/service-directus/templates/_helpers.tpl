@@ -46,11 +46,7 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{- define "directus.domain" -}}
-{{- if .Values.ingress.domain }}
-{{- .Values.ingress.domain }}
-{{- else }}
-{{ include "directus.releasename" . }}.{{ .Values.ingress.parentDomain }}
-{{- end }}
+{{- if .Values.ingress.domain }}{{- .Values.ingress.domain }}{{- else }}{{ include "directus.releasename" . }}.{{ .Values.ingress.parentDomain }}{{- end }}
 {{- end }}
 
 {{/*
