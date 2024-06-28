@@ -9,6 +9,8 @@ persistence:
   accessMode: ReadWriteOnce
   storageClass: hcloud-volumes
   size: 10Gi
+  enabled: true
+  extensions: true
 serviceAccount:
   create: false
 ingress:
