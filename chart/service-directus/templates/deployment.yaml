@@ -81,14 +81,18 @@ spec:
               value: {{ $value.value | quote }}
             {{- end }}
           {{- end }}
+          {{- if .Values.livelinessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /server/ping
               port: http
+          {{- end }}
+          {{- if .Values.readynessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /server/ping
               port: http
+          {{- end }}
       {{- if .Values.persistence.enabled}}
       volumes:
         - name: data

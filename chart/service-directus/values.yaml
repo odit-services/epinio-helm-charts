@@ -24,6 +24,10 @@ auth:
     password: epiniodemo
   secret: lab
 extraEnv: []
+livelinessProbe:
+  enabled: true
+readynessProbe:
+  enabled: true
 postgres:
   enabled: false
   majorVersion: 16
