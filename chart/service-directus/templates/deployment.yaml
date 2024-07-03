@@ -95,7 +95,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ include "directus.fullname" . }}
       {{- end}}
+      {{- with .Values.image.imagePullSecrets }}
       imagePullSecrets:
-        {{- if .Values.image.imagePullSecrets }}
-        - name: {{ .Values.image.imagePullSecrets }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
