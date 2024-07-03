@@ -3,6 +3,8 @@ image:
   repository: directus/directus
   tag: latest
   imagePullSecrets: []
+# Only set this to true if you are using a postgres database with no persistence or rwx volumes
+replicaCount: 1
 service:
   type: ClusterIP
   port: 8055

@@ -79,3 +79,15 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+This function validates replica count rules
+*/}}
+{{- define "validate.values" -}}
+{{- if and (gt (int .Values.replicaCount) 1) (and (eq .Values.persistence.enabled true) (ne .Values.persistence.accessMode "ReadWriteMany")) -}}
+{{- fail "Multiple replicas is only allowed for RWX volumes if persistence is enabled" -}}
+{{- end -}}
+{{- if and (gt (int .Values.replicaCount) 1) (eq .Values.postgres.enabled false) -}}
+{{- fail "Multiple replicas is only allowed when postgres is the database" -}}
+{{- end -}}
+{{- end -}}
