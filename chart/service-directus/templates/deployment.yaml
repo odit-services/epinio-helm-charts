@@ -81,13 +81,13 @@ spec:
               value: {{ $value.value | quote }}
             {{- end }}
           {{- end }}
-          {{- if .Values.livelinessProbe.enabled }}
+          {{- if eq .Values.livelinessProbe.enabled true }}
           livenessProbe:
             httpGet:
               path: /server/ping
               port: http
           {{- end }}
-          {{- if .Values.readynessProbe.enabled }}
+          {{- if eq .Values.readynessProbe.enabled true }}
           readinessProbe:
             httpGet:
               path: /server/ping
