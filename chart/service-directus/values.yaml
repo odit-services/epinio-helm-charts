@@ -2,6 +2,7 @@ image:
   pullPolicy: IfNotPresent
   repository: directus/directus
   tag: latest
+  imagePullSecrets: []
 service:
   type: ClusterIP
   port: 8055
