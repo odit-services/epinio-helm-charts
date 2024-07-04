@@ -1,3 +1,7 @@
+# You can use the values in this file to configure the Directus service.
+# For more information see the chart documentation.
+
+# You can use the image section to specify a custom image
 image:
   pullPolicy: IfNotPresent
   repository: directus/directus
@@ -5,35 +9,57 @@ image:
   imagePullSecrets: []
 # Only set this to true if you are using a postgres database with no persistence or rwx volumes
 replicaCount: 1
+
 service:
+  # Valid service types are ClusterIP, NodePort and LoadBalancer
   type: ClusterIP
+  # Change the port if your custom directus image uses a different port
   port: 8055
+
 persistence:
+  # Valid access modes are ReadWriteOnce, ReadOnlyMany and ReadWriteMany - only ReadWriteMany is supported for replicas > 1
   accessMode: ReadWriteOnce
   storageClass: hcloud-volumes
   size: 10Gi
   enabled: true
+  # Disable this if you are using a directus image that already has the extensions pre-installed
   extensions: true
-serviceAccount:
-  create: false
+
+# You have to set either the ingress.domain or the ingress.parentDomain
 ingress:
+  # Used to generate the ingress domain as <service-name>.<parentDomain>
   parentDomain: demo.odit.services
   clusterIssuer: letsencrypt-prod
+  # If you want to use a custom domain instead of the generated name set it here
   domain: ~
+
+# You can use the auth section to set the admin user credentials and the secret for the directus service
 auth:
   admin:
     email: demo@odit.services
     password: epiniodemo
   secret: lab
+
+# You can use the extraEnv array to add additional environment variables to the directus service - the container template env syntax is used
 extraEnv: []
+# You can use the extraEnvFrom array to add additional environment variables from secrets and configmaps to the directus service - the container template envFrom syntax is used
 extraEnvFrom: []
-livelinessProbe:
-  enabled: true
-readynessProbe:
-  enabled: true
+
+# By default the directus service uses a sqlite database - you can enable the postgres section to use a postgres database
 postgres:
   enabled: false
   majorVersion: 16
   persistence:
     size: 10Gi
     storageClass: hcloud-volumes
+
+# You can use the livenessProbe and readynessProbe sections to enable/disable the probes for the directus service
+livelinessProbe:
+  enabled: true
+readynessProbe:
+  enabled: true
+
+
+# You can use the serviceAccount section to create a service account for the directus service - this is not required
+serviceAccount:
+  create: false
