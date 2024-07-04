@@ -26,6 +26,7 @@ auth:
     password: epiniodemo
   secret: lab
 extraEnv: []
+extraEnvFrom: []
 livelinessProbe:
   enabled: true
 readynessProbe:

@@ -77,10 +77,11 @@ spec:
             - name: SECRET
               value: "{{ .Values.auth.secret }}"
             {{- with .Values.extraEnv }}
-            {{- range $key, $value := . }}
-            - name: {{ $value.name | quote }}
-              value: {{ $value.value | quote }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- if eq .Values.livelinessProbe.enabled true }}
           livenessProbe:
