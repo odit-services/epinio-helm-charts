@@ -10,7 +10,7 @@
         "tag": { "type": "string" },
         "imagePullSecrets": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": { "type": "object" }
         }
       },
       "required": ["pullPolicy", "repository", "tag"]
