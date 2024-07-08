@@ -28,10 +28,10 @@ persistence:
 # You have to set either the ingress.domain or the ingress.parentDomain
 ingress:
   # Used to generate the ingress domain as <service-name>.<parentDomain>
-  parentDomain: demo.odit.services
+  parentDomain: ~
   clusterIssuer: letsencrypt-prod
   # If you want to use a custom domain instead of the generated name set it here
-  domain: ~
+  domain: cms.example.com
 
 # You can use the auth section to set the admin user credentials and the secret for the directus service
 auth:

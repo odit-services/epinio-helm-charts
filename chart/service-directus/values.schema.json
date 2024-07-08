@@ -51,7 +51,7 @@
     "ingress": {
       "type": "object",
       "properties": {
-        "parentDomain": { "type": "string" },
+        "parentDomain": { "type": ["string", "null"] },
         "clusterIssuer": { "type": "string" },
         "domain": { "type": ["string", "null"] }
       },
