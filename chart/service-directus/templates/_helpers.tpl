@@ -90,7 +90,4 @@ This function validates replica count rules
 {{- if and (gt (int .Values.replicaCount) 1) (eq .Values.postgres.enabled false) -}}
 {{- fail "Multiple replicas is only allowed when postgres is the database" -}}
 {{- end -}}
-{{- if and (empty .Values.ingress.domain) (empty .Values.ingress.parentDomain) -}}
-{{- fail "You have to provide either domain or subdomain" -}}
-{{- end -}}
 {{- end -}}

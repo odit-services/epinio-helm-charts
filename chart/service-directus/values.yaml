@@ -31,7 +31,7 @@ ingress:
   parentDomain: ~
   clusterIssuer: letsencrypt-prod
   # If you want to use a custom domain instead of the generated name set it here
-  domain: cms.example.com
+  domain: ~
 
 # You can use the auth section to set the admin user credentials and the secret for the directus service
 auth:
