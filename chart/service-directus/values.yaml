@@ -49,6 +49,7 @@ extraEnvFrom: []
 postgres:
   enabled: false
   majorVersion: 16
+  instances: 1 # If you need high availability, set this to 3 or higher
   persistence:
     size: 10Gi
     storageClass: hcloud-volumes

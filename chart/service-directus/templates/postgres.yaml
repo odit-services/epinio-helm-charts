@@ -4,7 +4,7 @@ kind: Cluster
 metadata:
   name: {{ include "directus.dbname" . }}
 spec:
-  instances: 1
+  instances: {{ .Values.postgres.instances }}
   storage:
     size: {{ .Values.postgres.persistence.size }}
     storageClass: {{ .Values.postgres.persistence.storageClass }}
