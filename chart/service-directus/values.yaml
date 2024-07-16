@@ -9,6 +9,11 @@ image:
   imagePullSecrets: []
 # Only set this to true if you are using a postgres database with no persistence or rwx volumes
 replicaCount: 1
+strategy:
+  type: Recreate # Change this to RollingUpdate if you want to use the rolling update strategy and uncomment the rollingUpdate section
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 1
 
 service:
   # Valid service types are ClusterIP, NodePort and LoadBalancer
