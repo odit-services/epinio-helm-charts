@@ -51,6 +51,8 @@ spec:
               containerPort: 8055
               protocol: TCP
           env:
+            - name: PUBLIC_URL
+              value: "{{ include "directus.url" .}}"
           {{- if .Values.postgres.enabled }}
             - name: DB_CLIENT
               value: "pg"
