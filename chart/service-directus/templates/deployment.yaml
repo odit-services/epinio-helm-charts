@@ -9,7 +9,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 10
   strategy:
-    type: {{ .Values.strategy.type }}
+    type: {{ .Values.strategy.type | default "Recreate" }}
     {{- if .Values.strategy.rollingUpdate }}
     rollingUpdate:
       maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge | default 1 }}
