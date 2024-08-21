@@ -1,4 +1,4 @@
-{{ $s3Server := (lookup "s3.odit.services/v1alpha1" "S3Server" .Values.postgres.backup.s3ops.serverRef.namespace .Values.postgres.backup.s3ops.serverRef.name) }}
+{{ $s3Server := (lookup "s3.odit.services/v1alpha1" "S3Server" .Values.backup.s3ops.serverRef.namespace .Values.backup.s3ops.serverRef.name) }}
 {{- if not $s3Server }}
 {{fail "S3 Server not found"}}
 {{- end}}
@@ -18,7 +18,7 @@ spec:
     kind: ClusterImageCatalog
     name: postgresql
     major: {{ .Values.postgres.majorVersion }}
-  {{- if .Values.postgres.backup.enabled }}
+  {{- if .Values.backup.enabled }}
   backup:
     barmanObjectStore:
       destinationPath: "s3://{{ include "directus.backupbucket.name" . }}/db"

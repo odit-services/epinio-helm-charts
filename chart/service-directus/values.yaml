@@ -58,13 +58,14 @@ postgres:
   persistence:
     size: 10Gi
     storageClass: hcloud-volumes
-  backup:
-    enabled: false
-    target: s3ops # Valid targets are s3ops
-    s3ops:
-      serverRef:
-        name: s3ops
-        namespace: default
+
+backup:
+  enabled: false
+  target: s3ops # Valid targets are s3ops
+  s3ops:
+    serverRef:
+      name: s3ops
+      namespace: default
 
 # You can use the livenessProbe and readynessProbe sections to enable/disable the probes for the directus service
 livelinessProbe:

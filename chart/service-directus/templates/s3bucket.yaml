@@ -1,12 +1,12 @@
-{{- if eq .Values.postgres.backup.target "s3ops" }}
+{{- if eq .Values.backup.target "s3ops" }}
 apiVersion: s3.odit.services/v1alpha1
 kind: S3Bucket
 metadata:
   name: {{ include "directus.backupbucket.name" . }}
 spec:
   serverRef:
-    name: {{ .Values.postgres.backup.s3ops.serverRef.name }}
-    namespace: {{ .Values.postgres.backup.s3ops.serverRef.namespace }}
+    name: {{ .Values.backup.s3ops.serverRef.name }}
+    namespace: {{ .Values.backup.s3ops.serverRef.namespace }}
   region: backup
   createUserFromTemplate: readwrite
   disableNameGeneration: true
