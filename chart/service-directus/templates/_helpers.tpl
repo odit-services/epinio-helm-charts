@@ -38,6 +38,14 @@ This is the fullname truncated to 50 characters and with the suffix "-db" append
 {{- include "directus.fullname" . | trunc 45 | trimSuffix "-" }}-db
 {{- end }}
 
+{{- define "directus.backupbucket.name" -}}
+{{- include "directus.fullname" . | trunc 45 | trimSuffix "-" }}-backup
+{{- end }}
+
+{{- define "directus.backupbucket.secret" -}}
+{{- include "directus.backupbucket.name" . }}-s3creds
+{{- end }}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
