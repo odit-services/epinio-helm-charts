@@ -49,6 +49,12 @@ server:
   ingressClassName: ""
   # Disable tracking of the Epinio and Kubernetes cluster version
   disableTracking: false
+  persistence:
+    # The storage class to use for the server's persistent storage
+    storageClass: ""
+    # The size of the server's persistent storage
+    size: 2Gi
+    accessMode: ReadWriteOnce
   # Name of the Service Account used by the staging job
   stagingServiceAccountName: ""
   # Resources to allocate to the staging job. Default: unbounded cpu/memory, and 1Gi disk

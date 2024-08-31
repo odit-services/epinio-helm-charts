@@ -390,10 +390,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.server.persistence.accessMode | default "ReadWriteOnce" }}
   resources:
     requests:
-      storage: 2Gi
+      storage: {{ .Values.server.persistence.size | default "2Gi" }}
 ---
 apiVersion: v1
 kind: Service
