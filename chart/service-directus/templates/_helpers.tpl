@@ -82,6 +82,26 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Common labels
+*/}}
+{{- define "directus.backup.labels" -}}
+helm.sh/chart: {{ include "directus.chart" . }}
+{{ include "directus.backup.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "directus.backup.selectorLabels" -}}
+app.kubernetes.io/name: "{{ include "directus.name" . }}-backup"
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "directus.serviceAccountName" -}}

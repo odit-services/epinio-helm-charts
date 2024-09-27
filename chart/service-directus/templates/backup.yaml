@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: "{{ include "directus.fullname" . }}-backup"
   labels:
-    {{- include "directus.labels" . | nindent 4 }}
+    {{- include "directus.backup.labels" . | nindent 4 }}
 spec:
   replicas: 1
   revisionHistoryLimit: 10
@@ -15,13 +15,74 @@ spec:
       maxSurge: 1
   selector:
     matchLabels:
-      {{- include "directus.selectorLabels" . | nindent 6 }}
+      {{- include "directus.backup.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "directus.selectorLabels" . | nindent 8 }}
+        {{- include "directus.backup.selectorLabels" . | nindent 8 }}
     spec:
       containers:
+        - name: backup
+          image: "appleboy/docker-backup-database:postgres{{ .Values.postgres.majorVersion}}"
+          env:
+            - name: STORAGE_PATH
+              value: "database"
+            - name: TIME_SCHEDULE
+              value: {{ .Values.backup.schedule | quote}}
+            - name: STORAGE_DAYS
+              value: {{ .Values.backup.retention | quote }}
+            - name: STORAGE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: bucketname
+            - name: STORAGE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: endpoint
+            - name: STORAGE_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: tls
+            - name: STORAGE_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: region
+            - name: ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: accessKey
+            - name: SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: secretKey
+            - name: DATABASE_DRIVER 
+              value: "postgres"
+            - name: DATABASE_HOST 
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.dbname" . }}-app"
+                  key: host
+            - name: DATABASE_USERNAME  
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.dbname" . }}-app"
+                  key: username
+            - name: DATABASE_PASSWORD  
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.dbname" . }}-app"
+                  key: password
+            - name: DATABASE_NAME  
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.dbname" . }}-app"
+                  key: dbname
       {{- if gt (int .Values.replicaCount) 1 }}
         - name: backup
           image: ghcr.io/odit-services/docker-backup-files:latest
