@@ -1,0 +1,78 @@
+{{- if .Values.backup.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "directus.fullname" . }}-backup"
+  labels:
+    {{- include "directus.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      {{- include "directus.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "directus.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      {{- if gt (int .Values.replicaCount) 1 }}
+        - name: backup
+          image: ghcr.io/odit-services/docker-backup-files:latest
+          volumeMounts:
+            - mountPath: /data
+              name: data
+              readOnly: true
+          env:
+            - name: STORAGE_PATH
+              value: "data"
+            - name: TIME_SCHEDULE
+              value: {{ .Values.backup.schedule | quote}}
+            - name: STORAGE_RETENTION
+              value: {{ .Values.backup.retention | quote }}
+            - name: STORAGE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: bucketname
+            - name: STORAGE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: endpoint
+            - name: STORAGE_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: tls
+            - name: STORAGE_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: region
+            - name: ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: accessKey
+            - name: SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: secretKey
+        {{- end }}
+      volumes:
+        {{- if gt (int .Values.replicaCount) 1 }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "directus.fullname" . }}
+        {{- end }}
+      restartPolicy: Always
+
+{{- end }}
