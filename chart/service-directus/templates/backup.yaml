@@ -22,7 +22,7 @@ spec:
         {{- include "directus.backup.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: backup
+        - name: backup-db
           image: "appleboy/docker-backup-database:postgres{{ .Values.postgres.majorVersion}}"
           env:
             - name: STORAGE_PATH
@@ -83,8 +83,8 @@ spec:
                 secretKeyRef:
                   name: "{{ include "directus.dbname" . }}-app"
                   key: dbname
-      {{- if gt (int .Values.replicaCount) 1 }}
-        - name: backup
+        {{- if and .Values.persistence.enabled (gt (int .Values.replicaCount) 1) }}
+        - name: backup-files
           image: ghcr.io/odit-services/docker-backup-files:latest
           volumeMounts:
             - mountPath: /data
@@ -128,12 +128,12 @@ spec:
                   name: "{{ include "directus.backupbucket.name" . }}-s3creds"
                   key: secretKey
         {{- end }}
+    {{- if and .Values.persistence.enabled (gt (int .Values.replicaCount) 1) }}
       volumes:
-        {{- if gt (int .Values.replicaCount) 1 }}
         - name: data
           persistentVolumeClaim:
             claimName: {{ include "directus.fullname" . }}
-        {{- end }}
+    {{- end }}
       restartPolicy: Always
 
 {{- end }}

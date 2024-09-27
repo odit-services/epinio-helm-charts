@@ -102,6 +102,51 @@ spec:
               path: /server/ping
               port: http
           {{- end }}
+      {{- if and (and .Values.backup.enabled .Values.persistence.enabled) (eq (int .Values.replicaCount) 1) }}
+        - name: backup-files
+          image: ghcr.io/odit-services/docker-backup-files:latest
+          volumeMounts:
+            - mountPath: /data
+              name: data
+              readOnly: true
+          env:
+            - name: STORAGE_PATH
+              value: "data"
+            - name: TIME_SCHEDULE
+              value: {{ .Values.backup.schedule | quote}}
+            - name: STORAGE_RETENTION
+              value: {{ .Values.backup.retention | quote }}
+            - name: STORAGE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: bucketname
+            - name: STORAGE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: endpoint
+            - name: STORAGE_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: tls
+            - name: STORAGE_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: region
+            - name: ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: accessKey
+            - name: SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: secretKey
+        {{- end }}
       {{- if .Values.persistence.enabled}}
       volumes:
         - name: data
