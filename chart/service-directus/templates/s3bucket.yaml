@@ -9,6 +9,5 @@ spec:
     namespace: {{ .Values.backup.s3ops.serverRef.namespace }}
   region: backup
   createUserFromTemplate: readwrite
-  disableNameGeneration: true
   softDelete: true
 {{- end}}
