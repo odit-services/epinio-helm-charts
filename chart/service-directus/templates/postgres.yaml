@@ -1,3 +1,14 @@
+{{- $s3Server := dict "spec" (dict "endpoint" "mock-endpoint" "tls" false) }}  # Default value for $s3Server
+
+{{- if .Values.backup.enabled }}
+  {{- if .Release.IsInstall }}
+    {{- $s3Server = (lookup "s3.odit.services/v1alpha1" "S3Server" .Values.backup.s3ops.serverRef.namespace .Values.backup.s3ops.serverRef.name) }}
+    {{- if not $s3Server }}
+      {{ fail "S3 Server not found" }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
 {{- if .Values.postgres.enabled }}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -13,4 +24,18 @@ spec:
     kind: ClusterImageCatalog
     name: postgresql
     major: {{ .Values.postgres.majorVersion }}
+  {{- if .Values.backup.enabled }}
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://{{ include "directus.backupbucket.name" . }}/db"
+      endpointURL: "http{{if $s3Server.spec.tls }}s{{end}}://{{ $s3Server.spec.endpoint }}"
+      s3Credentials:
+        accessKeyId:
+          name: "{{ include "directus.backupbucket.secret" . }}"
+          key: accessKey
+        secretAccessKey:
+          name: "{{ include "directus.backupbucket.secret" . }}"
+          key: secretKey
+    retentionPolicy: "30d"
+  {{- end}}
 {{- end}}
