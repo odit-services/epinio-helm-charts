@@ -1,4 +1,4 @@
-{{- if eq .Values.backup.target "s3ops" }}
+{{- if and .Values.backup.enabled (eq .Values.backup.target "s3ops") }}
 apiVersion: s3.odit.services/v1alpha1
 kind: S3Bucket
 metadata:
