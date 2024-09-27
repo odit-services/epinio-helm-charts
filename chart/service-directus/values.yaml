@@ -62,6 +62,8 @@ postgres:
 backup:
   enabled: false
   target: s3ops # Valid targets are s3ops
+  schedule: "0 */6 * * *"
+  retention: 28
   s3ops:
     serverRef:
       name: s3ops
