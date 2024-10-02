@@ -4,7 +4,7 @@ description: The helm chart directus as a epinio service
 icon: https://raw.githubusercontent.com/odit-services/epinio-helm-charts/main/assets/epinio.png
 home: https://github.com/odit-services/epinio-helm-charts
 type: application
-version: 0.13.2
+version: 0.13.3
 keywords:
 - epinio
 - paas
