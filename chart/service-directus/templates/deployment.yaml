@@ -92,15 +92,19 @@ spec:
           {{- end }}
           {{- if eq .Values.livelinessProbe.enabled true }}
           livenessProbe:
-            httpGet:
-              path: /server/ping
-              port: http
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - wget -qO- http://127.0.0.1:8055/server/health | grep -q "ok" && exit 0 || exit 1
           {{- end }}
           {{- if eq .Values.readynessProbe.enabled true }}
           readinessProbe:
-            httpGet:
-              path: /server/ping
-              port: http
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - wget -qO- http://127.0.0.1:8055/server/health | grep -q "ok" && exit 0 || exit 1
           {{- end }}
       {{- if and (and .Values.backup.enabled .Values.persistence.enabled) (eq (int .Values.replicaCount) 1) }}
         - name: backup-files
