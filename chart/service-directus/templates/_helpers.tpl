@@ -121,7 +121,9 @@ This function validates replica count rules
 {{- fail "Multiple replicas is only allowed for RWX volumes if persistence is enabled" -}}
 {{- end -}}
 {{- end -}}
+{{- if eq .Values.chartValidation.disableDatabaseValidation false}}
 {{- if and (gt (int .Values.replicaCount) 1) (eq .Values.postgres.enabled false) -}}
 {{- fail "Multiple replicas is only allowed when postgres is the database" -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
