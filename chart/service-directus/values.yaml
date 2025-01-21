@@ -79,3 +79,6 @@ readynessProbe:
 # You can use the serviceAccount section to create a service account for the directus service - this is not required
 serviceAccount:
   create: false
+
+chartValidation:
+  disableAccessmodeValidation: false
