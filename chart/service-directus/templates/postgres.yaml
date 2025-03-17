@@ -22,7 +22,7 @@ spec:
   {{- if .Values.postgres.image }}
   imageName: {{ .Values.postgres.image }}
   {{- end }}
-  {{- if .Values.postgres.majorVersion}}
+  {{- if and (.Values.postgres.majorVersion) (not .Values.postgres.image) }}
   imageCatalogRef:
     apiGroup: postgresql.cnpg.io
     kind: ClusterImageCatalog
