@@ -16,6 +16,7 @@ metadata:
   name: {{ include "directus.dbname" . }}
 spec:
   instances: {{ .Values.postgres.instances }}
+  primaryUpdateMethod: switchover
   storage:
     size: {{ .Values.postgres.persistence.size }}
     storageClass: {{ .Values.postgres.persistence.storageClass }}
