@@ -125,5 +125,11 @@ This function validates replica count rules
 {{- if and (gt (int .Values.replicaCount) 1) (eq .Values.postgres.enabled false) -}}
 {{- fail "Multiple replicas is only allowed when postgres is the database" -}}
 {{- end -}}
+{{- if and .Values.postgres.image .Values.postgres.majorVersion -}}
+{{- fail "You can only set image version or major version" -}}
+{{- end -}}
+{{- if and (not .Values.postgres.image) (not .Values.postgres.majorVersion) -}}
+{{- fail "You have to set image version or major version" -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}

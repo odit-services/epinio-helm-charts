@@ -19,9 +19,14 @@ spec:
   storage:
     size: {{ .Values.postgres.persistence.size }}
     storageClass: {{ .Values.postgres.persistence.storageClass }}
+  {{- if .Values.postgres.image }}
+  imageName: {{ .Values.postgres.image }}
+  {{- end }}
+  {{- if .Values.postgres.majorVersion}}
   imageCatalogRef:
     apiGroup: postgresql.cnpg.io
     kind: ClusterImageCatalog
     name: postgresql
     major: {{ .Values.postgres.majorVersion }}
+  {{- end }}
 {{- end }}
