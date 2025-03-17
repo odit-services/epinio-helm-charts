@@ -52,8 +52,7 @@ extraEnvFrom: []
 
 # By default the directus service uses a sqlite database - you can enable the postgres section to use a postgres database
 postgres:
-  enabled: false
-  majorVersion: 16
+  majorVersion: 17
   instances: 1 # If you need high availability, set this to 3 or higher
   persistence:
     size: 10Gi
