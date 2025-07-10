@@ -104,7 +104,7 @@ spec:
   ingressClassName: "{{ .Values.ingress.ingressClassName }}"
   {{- end }}
   rules:
-  - host: "auth.{{ .Values.global.domain }}"
+  - host: "{{ .Values.global.dex.domainOverride }}"
     http:
       paths:
       - backend:
@@ -116,7 +116,7 @@ spec:
         pathType: Prefix
   tls:
   - hosts:
-    - "auth.{{ .Values.global.domain }}"
+    - "{{ .Values.global.dex.domainOverride }}"
     secretName: dex-tls
 
 {{- end }}
