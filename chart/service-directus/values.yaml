@@ -69,6 +69,7 @@ backup:
     serverRef:
       name: s3ops
       namespace: default
+    region: eu-central-1
 
 # You can use the livenessProbe and readynessProbe sections to enable/disable the probes for the directus service
 livelinessProbe:
