@@ -7,7 +7,7 @@ spec:
   serverRef:
     name: {{ .Values.backup.s3ops.serverRef.name }}
     namespace: {{ .Values.backup.s3ops.serverRef.namespace }}
-  region: backup
+  region: {{ .Values.backup.s3ops.region | default "backup" }}
   createUserFromTemplate: readwrite
   softDelete: true
 {{- end}}
