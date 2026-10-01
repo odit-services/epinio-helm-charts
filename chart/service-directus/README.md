@@ -66,7 +66,13 @@ The following table lists the configurable parameters of the Directus chart and 
 | `backup.s3ops.serverRef.name`       | Name of the s3 server ressource                                                  | `s3ops`                               |
 | `backup.s3ops.serverRef.namespace`  | Namespace of the s3 server ressource                                             | `default`                             |
 |                                     |                                                                                  |                                       |
-| `livenessProbe.enable`              | Liveness probe enable/disable                                                    | `true`                                |
-| `readynessProbe.enable`             | Readiness probe enable/disable                                                   | `true`                                |
+| `livelinessProbe.enabled`           | Liveness probe enable/disable                                                    | `true`                                |
+| `livelinessProbe.path`              | Probed HTTP path. `/server/health` needs a token on Directus 12+                 | `/server/ping`                        |
+| `livelinessProbe.expectedResponse`  | Substring the response must contain to count as healthy                          | `pong`                                |
+| `livelinessProbe.initialDelaySeconds` | Delay before the first probe, allows for boot and migrations                  | `30`                                  |
+| `livelinessProbe.periodSeconds`     | Interval between probes                                                           | `10`                                  |
+| `livelinessProbe.timeoutSeconds`    | Per-probe timeout                                                                  | `5`                                   |
+| `livelinessProbe.failureThreshold`  | Consecutive failures before a restart                                             | `3`                                   |
+| `readynessProbe.*`                  | Same options as `livelinessProbe`, with a shorter `initialDelaySeconds`            |                                       |
 |                                     |                                                                                  |                                       |
 | `serviceAccount.create`             | Create a service account for all created ressources                              | `false`                               |

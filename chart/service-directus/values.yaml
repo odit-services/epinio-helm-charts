@@ -74,11 +74,25 @@ backup:
       namespace: default
     region: eu-central-1
 
-# You can use the livenessProbe and readynessProbe sections to enable/disable the probes for the directus service
+# You can use the livenessProbe and readynessProbe sections to configure the probes for the directus service
+# NOTE: Directus 12 requires authentication for /server/health and answers unauthenticated probes with 403,
+# which makes the kubelet restart healthy containers. /server/ping stays public, so it is the default.
 livelinessProbe:
   enabled: true
+  path: /server/ping
+  expectedResponse: pong
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
 readynessProbe:
   enabled: true
+  path: /server/ping
+  expectedResponse: pong
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
 
 
 # You can use the serviceAccount section to create a service account for the directus service - this is not required

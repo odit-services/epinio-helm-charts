@@ -113,6 +113,25 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Renders a liveness or readiness probe for the directus container.
+Directus 12 requires authentication for /server/health, so the public /server/ping is used by default.
+Usage: include "directus.probe" (dict "root" . "probe" .Values.livelinessProbe)
+*/}}
+{{- define "directus.probe" -}}
+{{- $probe := .probe -}}
+{{- $url := printf "http://127.0.0.1:%v%v" .root.Values.service.port ($probe.path | default "/server/ping") -}}
+exec:
+  command:
+    - /bin/sh
+    - -c
+    - {{ printf "wget -qO- '%s' | grep -q '%s' && exit 0 || exit 1" $url ($probe.expectedResponse | default "pong") | quote }}
+initialDelaySeconds: {{ $probe.initialDelaySeconds | default 10 }}
+periodSeconds: {{ $probe.periodSeconds | default 10 }}
+timeoutSeconds: {{ $probe.timeoutSeconds | default 5 }}
+failureThreshold: {{ $probe.failureThreshold | default 3 }}
+{{- end }}
+
+{{/*
 This function validates replica count rules
 */}}
 {{- define "validate.values" -}}

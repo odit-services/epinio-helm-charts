@@ -92,19 +92,11 @@ spec:
           {{- end }}
           {{- if eq .Values.livelinessProbe.enabled true }}
           livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - wget -qO- http://127.0.0.1:8055/server/health | grep -q "ok" && exit 0 || exit 1
+            {{- include "directus.probe" (dict "root" . "probe" .Values.livelinessProbe) | nindent 12 }}
           {{- end }}
           {{- if eq .Values.readynessProbe.enabled true }}
           readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - wget -qO- http://127.0.0.1:8055/server/health | grep -q "ok" && exit 0 || exit 1
+            {{- include "directus.probe" (dict "root" . "probe" .Values.readynessProbe) | nindent 12 }}
           {{- end }}
       {{- if and (and .Values.backup.enabled .Values.persistence.enabled) (eq (int .Values.replicaCount) 1) }}
         - name: backup-files
