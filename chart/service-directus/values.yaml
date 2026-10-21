@@ -56,6 +56,8 @@ postgres:
   majorVersion: 17
   image: ~
   instances: 1 # If you need high availability, set this to 3 or higher
+  imageCatalog:
+    name: postgresql
   persistence:
     size: 10Gi
     storageClass: hcloud-volumes
