@@ -70,6 +70,17 @@ backup:
   pgBackupImage:
     repository: appleboy/docker-backup-database
     tag: ~
+  # Postgres backup method: appleboy runs an extra container with the appleboy/docker-backup-database image,
+  # cnpg-plugin uses a CNPG ScheduledBackup via the cnpg-plugin-pgdump plugin (requires postgres.enabled=true and the plugin deployed in cnpg-system).
+  # The shared backup.schedule is used for both: 5-field cron is passed as-is to appleboy and auto-converted (prepend "0 ") for CNPG which needs 6 fields.
+  postgres:
+    method: appleboy # Valid methods are appleboy and cnpg-plugin
+    cnpgPlugin:
+      path: db_dumps
+      backupUser: app
+      skipInaccessibleDatabases: "false"
+      # Leave empty to use the plugin default: {namespace}/{cluster}/{database}/{backup_id}.dump
+      objectKeyTemplate: ""
   s3ops:
     serverRef:
       name: s3ops

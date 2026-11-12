@@ -8,6 +8,11 @@ metadata:
 spec:
   instances: {{ .Values.postgres.instances }}
   primaryUpdateMethod: switchover
+  {{- if and .Values.backup.enabled (eq (include "directus.backup.postgresMethod" .) "cnpg-plugin") }}
+  plugins:
+    - name: pgdump-backup.cloudnative-pg.io
+      enabled: true
+  {{- end }}
   storage:
     size: {{ .Values.postgres.persistence.size }}
     storageClass: {{ .Values.postgres.persistence.storageClass }}

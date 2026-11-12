@@ -134,7 +134,36 @@ failureThreshold: {{ $probe.failureThreshold | default 3 }}
 {{/*
 This function validates replica count rules
 */}}
+{{- define "directus.backup.postgresMethod" -}}
+{{- dig "postgres" "method" "appleboy" .Values.backup | toString | lower }}
+{{- end }}
+
+{{/*
+Converts the shared backup.schedule (5-field cron for appleboy) to a 6-field cron for CNPG ScheduledBackup.
+- descriptors starting with "@" are passed through
+- 5-field crons get "0 " prepended (seconds=0)
+- 6-field crons are passed through
+*/}}
+{{- define "directus.backup.cnpgSchedule" -}}
+{{- $schedule := .Values.backup.schedule | toString | trim -}}
+{{- if hasPrefix "@" $schedule -}}
+{{- $schedule -}}
+{{- else -}}
+{{- $fields := splitList " " $schedule -}}
+{{- $count := len $fields -}}
+{{- if eq $count 5 -}}
+{{- printf "0 %s" $schedule -}}
+{{- else -}}
+{{- $schedule -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+
 {{- define "validate.values" -}}
+{{- $method := include "directus.backup.postgresMethod" . -}}
+{{- if and .Values.backup.enabled (not (or (eq $method "appleboy") (eq $method "cnpg-plugin"))) -}}
+{{- fail "backup.postgres.method must be either \"appleboy\" or \"cnpg-plugin\"" -}}
+{{- end -}}
 {{- if eq .Values.chartValidation.disableAccessmodeValidation false}}
 {{- if and (gt (int .Values.replicaCount) 1) (and (eq .Values.persistence.enabled true) (ne .Values.persistence.accessMode "ReadWriteMany")) -}}
 {{- fail "Multiple replicas is only allowed for RWX volumes if persistence is enabled" -}}

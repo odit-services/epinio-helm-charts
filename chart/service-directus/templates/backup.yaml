@@ -1,4 +1,6 @@
 {{- if .Values.backup.enabled }}
+{{- $method := include "directus.backup.postgresMethod" . }}
+{{- if eq $method "appleboy" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -135,5 +137,117 @@ spec:
             claimName: {{ include "directus.fullname" . }}
     {{- end }}
       restartPolicy: Always
+
+{{- else if eq $method "cnpg-plugin" }}
+{{- if .Values.postgres.enabled }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: {{ include "directus.fullname" . }}-postgres-backup
+spec:
+  # backup.schedule is shared with the appleboy container (5-field cron).
+  # CNPG requires 6 fields (seconds first), so 5-field schedules are auto-converted by prepending "0 ".
+  schedule: {{ include "directus.backup.cnpgSchedule" . | quote }}
+  method: plugin
+  pluginConfiguration:
+    name: pgdump-backup.cloudnative-pg.io
+    parameters:
+      target_type: s3
+      backup_user: {{ dig "postgres" "cnpgPlugin" "backupUser" "app" .Values.backup | quote }}
+      skip_inaccessible_databases: {{ dig "postgres" "cnpgPlugin" "skipInaccessibleDatabases" "false" .Values.backup | toString | quote }}
+      path: {{ dig "postgres" "cnpgPlugin" "path" "db_dumps" .Values.backup | quote }}
+      retention_days: {{ .Values.backup.retention | quote }}
+      {{- if (dig "postgres" "cnpgPlugin" "objectKeyTemplate" "" .Values.backup) }}
+      object_key_template: {{ dig "postgres" "cnpgPlugin" "objectKeyTemplate" "" .Values.backup | quote }}
+      {{- end }}
+      bucket_secret_name: {{ printf "%s-bkt" (include "directus.backupbucket.name" .) | quote }}
+      bucket_secret_key: "bucketname"
+      endpoint_url_secret_name: {{ printf "%s-bkt" (include "directus.backupbucket.name" .) | quote }}
+      endpoint_url_secret_key: "endpoint_url"
+      region_secret_name: {{ printf "%s-bkt" (include "directus.backupbucket.name" .) | quote }}
+      region_secret_key: "region"
+      access_key_id_secret_name: {{ printf "%s-s3creds" (include "directus.backupbucket.name" .) | quote }}
+      access_key_id_secret_key: "accessKey"
+      secret_access_key_secret_name: {{ printf "%s-s3creds" (include "directus.backupbucket.name" .) | quote }}
+      secret_access_key_secret_key: "secretKey"
+  cluster:
+    name: {{ include "directus.dbname" . }}
+{{- end }}
+{{- if and .Values.persistence.enabled (gt (int .Values.replicaCount) 1) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "directus.fullname" . }}-backup"
+  labels:
+    {{- include "directus.backup.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      {{- include "directus.backup.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "directus.backup.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: backup-files
+          image: ghcr.io/odit-services/docker-backup-files:latest
+          volumeMounts:
+            - mountPath: /data
+              name: data
+              readOnly: true
+          env:
+            - name: STORAGE_PATH
+              value: "data"
+            - name: TIME_SCHEDULE
+              value: {{ .Values.backup.schedule | quote}}
+            - name: STORAGE_RETENTION
+              value: {{ .Values.backup.retention | quote }}
+            - name: STORAGE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: bucketname
+            - name: STORAGE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: endpoint
+            - name: STORAGE_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: tls
+            - name: STORAGE_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-bkt"
+                  key: region
+            - name: ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: accessKey
+            - name: SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "directus.backupbucket.name" . }}-s3creds"
+                  key: secretKey
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "directus.fullname" . }}
+      restartPolicy: Always
+{{- end }}
+{{- end }}
 
 {{- end }}
