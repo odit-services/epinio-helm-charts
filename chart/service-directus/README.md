@@ -60,9 +60,14 @@ The following table lists the configurable parameters of the Directus chart and 
 | `postgres.persistence.storageClass` | Storage class for the postgres database                                          | `hcloud-volumes`                      |
 |                                     |                                                                                  |                                       |
 | `backup.enabled`                    | Enable backups for the directus instance                                         | `false`                               |
-| `backup.schedule`                   | Schedule for the backups (cron expression)                                       | `0 */6 * * *` (every 6 hours)         |
-| `backup.retention`                  | Retention period for the backups (in days)                                       | `7`                                   |
+| `backup.schedule`                   | Schedule for the backups (shared for both postgres methods; 5-field cron, auto-converted to 6-field for CNPG) | `0 */6 * * *` (every 6 hours) |
+| `backup.retention`                  | Retention period for the backups (in days, used by both postgres methods)        | `28`                                  |
 | `backup.target`                     | Target for the backups (currently only supports s3 through s3ops)                | `s3ops`                               |
+| `backup.postgres.method`            | Postgres backup method: `appleboy` (extra container) or `cnpg-plugin` (CNPG ScheduledBackup via cnpg-plugin-pgdump) | `appleboy` |
+| `backup.postgres.cnpgPlugin.path`   | S3 prefix for cnpg-plugin dumps                                                  | `db_dumps`                            |
+| `backup.postgres.cnpgPlugin.backupUser` | CNPG role used for discovery and pg_dump (reads `<cluster>-<user>` secret)  | `app`                                 |
+| `backup.postgres.cnpgPlugin.skipInaccessibleDatabases` | Skip databases the backup user cannot connect to (`"true"`/`"false"`) | `"false"`                        |
+| `backup.postgres.cnpgPlugin.objectKeyTemplate` | Object key template (empty = plugin default `{namespace}/{cluster}/{database}/{backup_id}.dump`) | `""` |
 | `backup.s3ops.serverRef.name`       | Name of the s3 server ressource                                                  | `s3ops`                               |
 | `backup.s3ops.serverRef.namespace`  | Namespace of the s3 server ressource                                             | `default`                             |
 |                                     |                                                                                  |                                       |
